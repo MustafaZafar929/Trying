@@ -1,12 +1,13 @@
 using Trying.Models;
 using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AccountDbContext>(options =>
 {
-options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionStringforDatabase"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionStringforDatabase"));
 });
 
 var app = builder.Build();
@@ -30,6 +31,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-    
+app.MapControllerRoute(
+    name: "bio",
+    pattern: "BioData/{action=Information}/{id?}",
+    defaults: new { controller = "BioData", action = "Information" });
 
 app.Run();
+
+

@@ -1,38 +1,67 @@
 ﻿@model Account
 
-@{
-    ViewData["Title"] = "Login";
+<h2>Login</h2>
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Username)
+        @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password)
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Login" class="btn btn-primary" />
+        <button type="button" class="btn btn-link" id="signup-toggle">Sign Up</button>
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 }
 
-<h1>Login</h1>
+<div id="signup-section" style="display: none;">
+    <h2>Sign Up</h2>
 
-<h4>Account</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    @using (Html.BeginForm("SignUp", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Username)
+            @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password)
+            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Sign Up" class="btn btn-primary" />
+            <button type="button" class="btn btn-link" id="login-toggle">Login</button>
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    }
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $("#signup-toggle").click(function () {
+                $("#signup-section").show();
+                $("form[action='/Account/Login']").hide();
+            });
+
+            $("#login-toggle").click(function () {
+                $("#signup-section").hide();
+                $("form[action='/Account/Login']").show();
+            });
+        });
+    </script>
 }

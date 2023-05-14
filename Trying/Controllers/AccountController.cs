@@ -28,7 +28,7 @@ namespace Trying.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _context.accounts.FirstOrDefaultAsync(a => a.Username == account.Username && a.Password == account.Password);
+                var result = await _context.Accounts.FirstOrDefaultAsync(a => a.Username == account.Username && a.Password == account.Password);
 
                 if (result != null)
                 {
@@ -42,7 +42,35 @@ namespace Trying.Controllers
 
             return View(account);
         }
+
+        // GET: Account/SignUp
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+
+        // POST: Account/SignUp
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUp(Account account)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _context.Accounts.FirstOrDefaultAsync(a => a.Username == account.Username);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Username already exists.");
+                }
+                else
+                {
+                    _context.Accounts.Add(account);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Login"); // Redirect to the Login action
+                }
+            }
+
+            return View(account);
+        }
     }
 }
-
-
